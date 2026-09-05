@@ -1,7 +1,9 @@
 import numpy as np
 import pytest
+import xarray as xr
 
-from ocean_backend.science.interpolation import linear_time, trilinear
+
+from ocean_backend.science.interpolation import linear_time, trilinear,  interpolate_4d
 
 
 def test_linear_time_midpoint():
@@ -44,3 +46,118 @@ def test_interpolate_3d_constant_field():
     )
 
     assert result == pytest.approx(10.0)
+    
+def test_linear_time():
+    result = linear_time(
+        v0=18.0,
+        v1=20.0,
+        alpha=0.5,
+    )
+
+    assert result == pytest.approx(19.0)
+    
+    
+def test_linear_time_at_start():
+    result = linear_time(
+        v0=18.0,
+        v1=20.0,
+        alpha=0.0,
+    )
+
+    assert result == pytest.approx(18.0)
+
+
+def test_linear_time_at_end():
+    result = linear_time(
+        v0=18.0,
+        v1=20.0,
+        alpha=1.0,
+    )
+
+    assert result == pytest.approx(20.0)
+
+
+def test_linear_time_rejects_invalid_alpha():
+    with pytest.raises(ValueError):
+        linear_time(
+            v0=18.0,
+            v1=20.0,
+            alpha=1.5,
+        )
+
+    with pytest.raises(ValueError):
+        linear_time(
+            v0=18.0,
+            v1=20.0,
+            alpha=-0.1,
+        )
+        
+        
+def test_linear_time_at_start():
+    result = linear_time(
+        v0=18.0,
+        v1=20.0,
+        alpha=0.0,
+    )
+
+    assert result == pytest.approx(18.0)
+
+
+def test_linear_time_at_end():
+    result = linear_time(
+        v0=18.0,
+        v1=20.0,
+        alpha=1.0,
+    )
+
+    assert result == pytest.approx(20.0)
+
+
+def test_linear_time_rejects_invalid_alpha():
+    with pytest.raises(ValueError):
+        linear_time(
+            v0=18.0,
+            v1=20.0,
+            alpha=1.5,
+        )
+
+    with pytest.raises(ValueError):
+        linear_time(
+            v0=18.0,
+            v1=20.0,
+            alpha=-0.1,
+        )
+        
+        
+def test_linear_time_with_real_model_values():
+    june_22 = 19.121503905573316
+    june_23 = 18.962031441050737
+
+    result = linear_time(
+        v0=june_22,
+        v1=june_23,
+        alpha=0.5,
+    )
+
+    assert result == pytest.approx(19.041767673312027)
+    
+def test_interpolate_4d_with_real_model_data():
+    ds = xr.open_dataset(
+        "src/ocean_backend/data/model_4d.nc"
+    )
+
+    result = interpolate_4d(
+        ds["thetao"],
+        latitude=12.5,
+        longitude=70.5,
+        depth=150.0,
+        time=np.datetime64(
+            "2026-06-22T12:00:00"
+        ),
+    )
+
+    ds.close()
+
+    assert result == pytest.approx(
+        19.041767673312027
+    )

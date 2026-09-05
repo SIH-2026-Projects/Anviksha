@@ -1,12 +1,32 @@
-"""Observation access boundary.
-
-Argo/Glider adapters should normalize into this boundary rather than leaking source-specific
-field names into the scientific engine.
-"""
-
-from ocean_backend.models.schemas import ObservationPoint
+from dataclasses import dataclass
+from datetime import datetime
 
 
-class ObservationRepository:
-    def get(self, observation_id: str) -> ObservationPoint | None:
-        raise NotImplementedError
+@dataclass
+class Observation:
+    """
+    A single in-situ ocean observation.
+    creating aaa data structure representing
+Observation
+├── latitude
+├── longitude
+├── depth
+├── time
+├── variable
+├── value
+├── platform_id
+└── quality flag
+
+    Represents one measurement made by an instrument
+    at a specific location, depth, and time.
+    """
+
+    platform_id: str
+    latitude: float
+    longitude: float
+    depth: float
+    time: datetime
+    variable: str
+    value: float
+    quality_flag: str
+    

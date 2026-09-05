@@ -294,3 +294,69 @@ def interpolate_3d(
     )
 
     return float(result)
+
+def interpolate_4d(
+    field: xr.DataArray,
+    latitude: float,
+    longitude: float,
+    depth: float,
+    time: np.datetime64,
+) -> float:
+    """
+    Interpolate an ocean model field in latitude, longitude,
+    depth, and time.
+
+    The field must contain:
+        time
+        latitude
+        longitude
+        depth
+
+    Temporal interpolation is linear between the two surrounding
+    model timesteps.
+    """
+
+    if "time" not in field.dims:
+        raise ValueError("Field must contain a time dimension.")
+
+    times = field["time"].values
+
+    if time < times.min() or time > times.max():
+        raise ValueError("Requested time is outside the model domain.")
+
+    time_index = np.searchsorted(times, time)
+
+    time_index = min(
+        max(time_index, 1),
+        len(times) - 1,
+    )
+
+    time0 = times[time_index - 1]
+    time1 = times[time_index]
+
+    field0 = field.isel(time=time_index - 1)
+    field1 = field.isel(time=time_index)
+
+    value0 = interpolate_3d(
+        field0,
+        latitude,
+        longitude,
+        depth,
+    )
+
+    value1 = interpolate_3d(
+        field1,
+        latitude,
+        longitude,
+        depth,
+    )
+
+    alpha = float(
+        (time - time0) / (time1 - time0)
+    )
+
+    return linear_time(
+        value0,
+        value1,
+        alpha,
+    )

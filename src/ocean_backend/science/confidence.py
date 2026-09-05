@@ -23,3 +23,36 @@ def classify_comparability(c: Comparability) -> str:
     if not c.qc_passed:
         return "UNAVAILABLE"
     return "UNAVAILABLE"
+
+def calculate_confidence(
+    quality_flag: str,
+    distance_km: float,
+    depth_difference_m: float,
+    time_difference_hours: float,
+) -> str:
+    """
+    Calculate deterministic confidence for a
+    model-observation comparison.
+    """
+
+    quality_flag = quality_flag.strip().upper()
+
+    if quality_flag == "FAIL":
+        return "LOW"
+
+    if (
+        distance_km > 50.0
+        or depth_difference_m > 25.0
+        or time_difference_hours > 24.0
+    ):
+        return "LOW"
+
+    if (
+        quality_flag == "PASS"
+        and distance_km <= 10.0
+        and depth_difference_m <= 10.0
+        and time_difference_hours <= 6.0
+    ):
+        return "HIGH"
+
+    return "MEDIUM"
