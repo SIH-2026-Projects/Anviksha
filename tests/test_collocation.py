@@ -16,6 +16,7 @@ def test_collocation_result_creation():
         confidence="HIGH",
         interpolation_method="trilinear",
         quality_flag="PASS",
+        confidence_reasons=["Observation passed quality control."]
     )
 
     assert result.platform_id == "ARGO_TEST_001"

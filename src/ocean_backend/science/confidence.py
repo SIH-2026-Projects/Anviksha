@@ -29,30 +29,48 @@ def calculate_confidence(
     distance_km: float,
     depth_difference_m: float,
     time_difference_hours: float,
-) -> str:
+) -> tuple[str, list[str]]:
     """
-    Calculate deterministic confidence for a
-    model-observation comparison.
+    Calculate deterministic confidence and explain why.
     """
 
     quality_flag = quality_flag.strip().upper()
+    reasons = []
 
     if quality_flag == "FAIL":
-        return "LOW"
+        reasons.append("Observation failed quality control.")
+        return "LOW", reasons
+
+    if distance_km > 50.0:
+        reasons.append("Large spatial separation.")
+
+    if depth_difference_m > 25.0:
+        reasons.append("Large depth separation.")
+
+    if time_difference_hours > 24.0:
+        reasons.append("Large temporal separation.")
+
+    if reasons:
+        return "LOW", reasons
+
+    if quality_flag == "SUSPECT":
+        reasons.append("Observation has a suspect quality flag.")
+        return "MEDIUM", reasons
 
     if (
-        distance_km > 50.0
-        or depth_difference_m > 25.0
-        or time_difference_hours > 24.0
-    ):
-        return "LOW"
-
-    if (
-        quality_flag == "PASS"
-        and distance_km <= 10.0
+        distance_km <= 10.0
         and depth_difference_m <= 10.0
         and time_difference_hours <= 6.0
     ):
-        return "HIGH"
+        reasons.extend([
+            "Observation passed quality control.",
+            "Small spatial separation.",
+            "Small depth separation.",
+            "Small temporal separation.",
+        ])
 
-    return "MEDIUM"
+        return "HIGH", reasons
+
+    reasons.append("Comparison is usable but does not meet high-confidence criteria.")
+
+    return "MEDIUM", reasons

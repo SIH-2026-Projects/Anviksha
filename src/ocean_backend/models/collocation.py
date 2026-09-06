@@ -22,3 +22,4 @@ class CollocationResult:
     confidence: str
     interpolation_method: str
     quality_flag: str
+    confidence_reasons: list[str]

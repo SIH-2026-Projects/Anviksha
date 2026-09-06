@@ -5,7 +5,7 @@ from ocean_backend.science.depth import depth_difference_m
 from ocean_backend.science.geo import distance_km
 from ocean_backend.science.time import time_difference_hours
 from ocean_backend.science.confidence import calculate_confidence
-
+from ocean_backend.science.qc import validate_quality_flag
 #attaching collocation layer
 
 
@@ -28,7 +28,8 @@ def build_collocation_result(
     The model_value is assumed to have already been obtained
     through the appropriate model interpolation.
     """
-
+    quality_flag = validate_quality_flag(observation.quality_flag)
+    
     difference = model_observation_difference(
         model_value=model_value,
         observation_value=observation.value,
@@ -51,8 +52,8 @@ def build_collocation_result(
         model_time,
     )
     
-    confidence = calculate_confidence(
-    quality_flag=observation.quality_flag,
+    confidence, confidence_reasons = calculate_confidence(
+    quality_flag=quality_flag,
     distance_km=distance,
     depth_difference_m=depth_difference,
     time_difference_hours=time_difference,
@@ -69,5 +70,6 @@ def build_collocation_result(
         time_difference_hours=time_difference,
         confidence=confidence,
         interpolation_method=interpolation_method,
-        quality_flag=observation.quality_flag,
+        quality_flag=quality_flag,
+        confidence_reasons=confidence_reasons,
     )

@@ -40,3 +40,4 @@ class ComparisonEvidence(BaseModel):
     observation_qc: QCStatus
     interpolation: str | None
     confidence: ConfidenceLevel
+    confidence_reasons: list[str]

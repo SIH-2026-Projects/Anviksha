@@ -42,3 +42,5 @@ def test_model_observation_integration():
     assert difference == pytest.approx(
     19.041767673312027 - 18.91
     )
+    assert np.isfinite(model_value)
+    assert -3.0 <= model_value <= 40.0
