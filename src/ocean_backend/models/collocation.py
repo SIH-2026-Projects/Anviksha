@@ -1,12 +1,11 @@
+"""Scientific model-observation collocation models."""
+
 from dataclasses import dataclass
 
 
 @dataclass
 class CollocationResult:
-    """
-    Result of comparing an observation with a model value
-    at the corresponding location, depth, and time.
-    """
+    """Result of collocating an observation with a model field."""
 
     platform_id: str
     variable: str
@@ -20,6 +19,9 @@ class CollocationResult:
     time_difference_hours: float
 
     confidence: str
+
     interpolation_method: str
+
     quality_flag: str
+
     confidence_reasons: list[str]

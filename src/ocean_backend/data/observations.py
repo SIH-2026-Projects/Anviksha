@@ -6,19 +6,6 @@ from datetime import datetime
 class Observation:
     """
     A single in-situ ocean observation.
-    creating aaa data structure representing
-Observation
-├── latitude
-├── longitude
-├── depth
-├── time
-├── variable
-├── value
-├── platform_id
-└── quality flag
-
-    Represents one measurement made by an instrument
-    at a specific location, depth, and time.
     """
 
     platform_id: str
@@ -29,4 +16,7 @@ Observation
     variable: str
     value: float
     quality_flag: str
-    
+
+    cycle_number: int | None = None
+    value_source: str | None = None
+    data_mode: str | None = None

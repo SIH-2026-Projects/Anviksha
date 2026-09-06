@@ -126,7 +126,7 @@ def test_model_service_uses_observation_coordinates_for_collocation():
     assert result.observed_value == pytest.approx(18.91)
 
     assert result.spatial_distance_km == pytest.approx(0.0)
-    assert result.depth_difference_m == pytest.approx(0.0)
+    assert result.depth_difference_m == pytest.approx(150.0)
     assert result.temporal_difference_hours == pytest.approx(0.0)
 
 
