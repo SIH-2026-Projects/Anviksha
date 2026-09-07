@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from ocean_backend.api.routes.comparison import router as comparison_router
-
+from ocean_backend.api.routes import observations
 
 app = FastAPI(
     title="ANVIKSHA",
@@ -16,3 +16,4 @@ def health() -> dict[str, str]:
 
 
 app.include_router(comparison_router)
+app.include_router(observations.router)
