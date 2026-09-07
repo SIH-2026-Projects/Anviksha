@@ -1,4 +1,4 @@
-# SIH26067 Ocean Backend
+# Anviksha
 
 Server-side scientific backend for SIH26067.
 
