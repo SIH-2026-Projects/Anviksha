@@ -1,4 +1,4 @@
-# Anviksha
+# God'sEye
 
 Server-side scientific backend for SIH26067.
 
